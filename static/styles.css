@@ -1,0 +1,183 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f7f9fc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    display: flex;
+    width: 1000px;
+    height: 700px;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* Khung bên trái cho việc train */
+.train-container {
+    width: 40%;
+    padding: 20px;
+    background-color: #f1f1f1;
+    border-right: 1px solid #ddd;
+}
+
+.train-header {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.train-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.train-form textarea {
+    width: 100%;
+    height: 300px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    resize: none;
+    outline: none;
+}
+
+.train-form input, .train-form button {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    outline: none;
+}
+
+.train-form button {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+.train-form button:hover {
+    background-color: #0056b3;
+}
+
+/* Khung chat bên phải */
+.chat-container {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header {
+    background-color: #007bff;
+    color: #fff;
+    padding: 15px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+}
+
+.chat-box {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.message {
+    margin-bottom: 12px;
+    padding: 10px;
+    border-radius: 8px;
+    max-width: 70%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.message.user {
+    background-color: #e0f7fa;
+    align-self: flex-end;
+    border-top-right-radius: 0;
+}
+
+.message.bot {
+    background-color: #f1f8e9;
+    align-self: flex-start;
+    border-top-left-radius: 0;
+}
+
+.message .timestamp {
+    font-size: 12px;
+    color: #888;
+    margin-top: 5px;
+    align-self: flex-end;
+}
+
+.input-container {
+    display: flex;
+    border-top: 1px solid #ddd;
+    background-color: #f9f9f9;
+}
+
+.input-container input {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 0 0 0 10px;
+    outline: none;
+}
+
+.input-container button {
+    padding: 10px;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 0 0 10px 0;
+    cursor: pointer;
+}
+
+.input-container button:hover {
+    background-color: #0056b3;
+}
+
+/* Đặt khung tải file trong chat */
+.file-upload-container {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.file-upload-container input[type="file"] {
+    margin-bottom: 10px;
+}
+/* Đặt file-upload-icon nằm cạnh nút gửi */
+.input-container {
+    display: flex;
+    align-items: center;
+}
+
+.input-container button {
+    margin-right: 5px;
+}
+
+.file-upload-icon {
+    cursor: pointer;
+    display: inline-block;
+}
+
+.file-upload-icon img {
+    width: 24px; /* Kích thước biểu tượng file */
+    height: 24px;
+}
+
+canvas {
+    max-width: 100%;
+    margin-top: 20px;
+}

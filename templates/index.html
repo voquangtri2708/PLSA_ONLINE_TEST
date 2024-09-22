@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pLSA - Train & Chat</title>
+    <!-- Thêm Chart.js từ CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Khung bên trái để nhập dữ liệu train và test -->
+        <div class="train-container">
+            <div class="train-header">
+                <h3>Train Data</h3>
+            </div>
+            <div class="train-form">
+                <!-- Input để tải file train -->
+                <label for="trainFile">Chọn file train:</label>
+                <input type="file" id="trainFile" accept=".txt">
+
+                <input type="number" id="numTopics" placeholder="Số chủ đề" min="1" />
+                <button onclick="sendTrainData()">Train</button>
+            </div>
+            <div>
+                <!-- Vẽ biểu đồ ở đây -->
+                <!-- Canvas để vẽ biểu đồ -->
+                <canvas id="chart"></canvas>
+            </div>
+            <div id="legend" class="chart-legend">
+                <!-- Bảng chú thích sẽ được hiển thị ở đây -->
+            </div>
+        </div>
+
+        <!-- Khung chat bên phải -->
+        <div class="chat-container">
+            <div class="chat-header">
+                Probabilistic Latent Semantic Analysis
+            </div>
+            <div class="chat-box" id="chatBox">
+                <!-- Tin nhắn sẽ được thêm vào đây -->
+            </div>
+            <div class="input-container">
+                <input type="text" id="messageInput" placeholder="Nhập nội dung hoặc chọn file..." />
+                <button onclick="sendMessage()">Gửi</button>
+                
+                <!-- Biểu tượng để gửi file -->
+                <label for="chatFile" class="file-upload-icon">
+                    <img src="{{ url_for('static', filename='file-icon.png') }}" alt="Attach file">
+                </label>
+                <input type="file" id="chatFile" accept=".txt" style="display: none;">
+            </div>
+            
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</body>
+</html>
