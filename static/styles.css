@@ -181,3 +181,13 @@ canvas {
     max-width: 100%;
     margin-top: 20px;
 }
+
+.model-upload-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between the label, input, and button */
+}
+
+.chart-legend {
+    font-size: 17px;
+}

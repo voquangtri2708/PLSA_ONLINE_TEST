@@ -325,3 +325,76 @@ function drawChart(labels, data, tooltips) {
         // Thêm bảng vào container chú thích
         legendContainer.appendChild(table);
     }
+
+
+// Function to save the trained model
+function saveModel() {
+    fetch('/save_model', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert('Model đã được lưu thành công: ' + data.model_name);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+// Function to upload a model file
+function uploadModel() {
+    const modelFileInput = document.getElementById('modelFile');
+    
+    if (modelFileInput.files.length > 0) {
+        const modelFile = modelFileInput.files[0];
+        
+        const formData = new FormData();
+        formData.append('model_file', modelFile);
+
+        fetch('/upload_model', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(result => {
+
+            // Tạo labels và chú thích
+            const labels = [];
+            const tooltips = [];
+            const data = [];
+
+            for (const [key, value] of Object.entries(result)) {
+                const label = key.slice(0, 3); // Lấy 3 ký tự đầu làm tên cột
+                const tooltip = key.slice(3);  // Phần còn lại làm chú thích
+                labels.push(label);
+                tooltips.push(tooltip);
+                data.push(value);
+            }
+
+            // Vẽ biểu đồ cột
+            drawChart(labels, data, tooltips);
+
+            // Hiển thị bảng chú thích dưới đồ thị
+            createLegend(labels, tooltips);
+        })
+        .then(data => {
+            alert('Model đã được tải lên và sẵn sàng sử dụng.');
+        })
+        
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    } else {
+        alert('Vui lòng chọn file model để tải lên.');
+    }
+}
+
+// Function to enable the test inputs (messageInput and button)
+function enableTestInputs() {
+    document.getElementById('messageInput').disabled = false;
+    document.querySelector('button[onclick="sendMessage()"]').disabled = false;
+    document.getElementById('chatFile').disabled = false;
+}   

@@ -1,3 +1,4 @@
+import os
 from model import PLSA
 from flask import Flask, render_template, request, jsonify
 
@@ -16,11 +17,15 @@ def handle_message():
 
     global model
 
-    topic = model.test(user_message)
-    # bot_response = summarize_text(user_message)
-    
-    # return jsonify({'response': bot_response})
-    return jsonify({'response': "Pz"+str(topic)})
+
+    if model == None:
+        return jsonify({'response': "Vui lòng train model hoặc up model PLSA!!!"})
+    else:
+        topic = model.test(user_message)
+        # bot_response = summarize_text(user_message)
+        
+        # return jsonify({'response': bot_response})
+        return jsonify({'response': "Pz"+str(topic)})
 
 @app.route('/train_model', methods=["POST"])
 def train_model():
@@ -73,6 +78,48 @@ def test_model():
 
 def summarize_text(text):
     return text
+
+# Save model endpoint
+@app.route('/save_model', methods=['POST'])
+def save_model():
+    model_name = 'saved_plsa_model.pkl'
+    
+    global model
+    model.save_model(model_name)
+
+
+    return jsonify({'model_name': model_name})
+
+@app.route('/upload_model', methods=['POST'])
+def upload_model():
+    if 'model_file' not in request.files:
+        return jsonify({'error': 'No model file uploaded'}), 400
+
+    model_file = request.files['model_file']
+    
+
+    root_dir = app.root_path
+    file_path = os.path.join(root_dir, model_file.filename)
+    # Save the uploaded model to the server
+    model_file.save(file_path)
+    global model
+    
+    try:
+        # Load the model using the PLSA class instance
+        model = PLSA(K=3, maxIteration=30,threshold=10.0, topicWordsNum=5)
+        p, Pz, lamda, theta, wordTop, id2w = model.load_model(file_path)
+        for i in range(0,len(wordTop)):
+            wordTop[i] = 'Pz'+str(i) + wordTop[i]
+
+    
+
+        result = dict(zip(wordTop, Pz))
+    except Exception as e:
+        return jsonify({'error': f'Failed to load model: {str(e)}'}), 500
+
+    return jsonify(result)
+
+
 
 if __name__ == '__main__':
     app.run(port=3000, debug=True)

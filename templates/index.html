@@ -19,24 +19,37 @@
                 <!-- Input để tải file train -->
                 <label for="trainFile">Chọn file train:</label>
                 <input type="file" id="trainFile" accept=".txt">
-
+            
+               
                 <input type="number" id="numTopics" placeholder="Số chủ đề" min="1" />
                 <button onclick="sendTrainData()">Train</button>
+            
+                <!-- New buttons for saving models -->
+                <button onclick="saveModel()">Lưu Model</button>
+                <div class="model-upload-container">
+                    <label for="modelFile">Tải Model:</label> <br>
+                    <input type="file" id="modelFile" accept=".pkl" />
+                    <button onclick="uploadModel()">Up Model</button>
+                </div>
+            
+
             </div>
+            
             <div>
                 <!-- Vẽ biểu đồ ở đây -->
                 <!-- Canvas để vẽ biểu đồ -->
                 <canvas id="chart"></canvas>
             </div>
-            <div id="legend" class="chart-legend">
-                <!-- Bảng chú thích sẽ được hiển thị ở đây -->
-            </div>
+           
         </div>
 
         <!-- Khung chat bên phải -->
         <div class="chat-container">
             <div class="chat-header">
                 Probabilistic Latent Semantic Analysis
+            </div>
+            <div id="legend" class="chart-legend">
+                <!-- Bảng chú thích sẽ được hiển thị ở đây -->
             </div>
             <div class="chat-box" id="chatBox">
                 <!-- Tin nhắn sẽ được thêm vào đây -->
@@ -51,7 +64,6 @@
                 </label>
                 <input type="file" id="chatFile" accept=".txt" style="display: none;">
             </div>
-            
         </div>
     </div>
 

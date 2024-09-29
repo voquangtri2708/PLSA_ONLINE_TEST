@@ -1,6 +1,7 @@
 import re
 import codecs
 import numpy as np
+import pickle
 from numpy import zeros, int8, log
 from pyvi import ViTokenizer
 from pylab import random
@@ -109,6 +110,8 @@ class PLSA:
         total = np.sum(X)
         self.Pz /= total
 
+
+        
     def LogLikelihood(self, N, M, X):
         loglikelihood = 0
         for i in range(0, N):
@@ -126,6 +129,7 @@ class PLSA:
 
         oldLoglikelihood = 1
         newLoglikelihood = 1
+        # print("training")
         for i in range(0, self.maxIteration):
             self.EStep(N, M, X)
             self.MStep(N, M, X)
@@ -166,20 +170,43 @@ class PLSA:
         z = []
         for k in range(self.K):
             p_new = 1
-            # print("k:",k)
+            # print("Theta[",k,":]")
             for i in range(len(xtest)):
                 if xtest[i] != 0:
                     if self.theta[k,i] > 1e-6:
-                        # print(self.theta[k,i])
+                        # print(self.theta[k,i], " * ", xtest[i])
                         p_new *= self.theta[k,i] * xtest[i]
                         # print(p_new)
             p_new *= self.Pz[k]
             # print("Pzk|D", p_new)
             z.append(p_new)
-                
+        # print(z)        
         main_topic = z.index(max(z))
         return main_topic
-    
+
+    def save_model(self, filename):
+        with open(filename, 'wb') as f:
+            pickle.dump({
+                'Pz': self.Pz,
+                'theta': self.theta,
+                'lamda': self.lamda,
+                'id2word': self.id2word,
+                'word2id': self.word2id,
+            }, f)
+        # print(f'Model saved to {filename}')
+
+    def load_model(self, filename):
+        with open(filename, 'rb') as f:
+            params = pickle.load(f)
+            self.Pz = params['Pz']
+            self.theta = params['theta']
+            self.lamda = params['lamda']
+            self.id2word = params['id2word']
+            self.word2id = params['word2id']
+        # print(f'Model loaded from {filename}')
+        topic = self.get_top_words()
+        self.K = len(self.Pz)
+        return self.p, self.Pz, self.lamda, self.theta, topic, self.id2word
 
 
 # file = codecs.open('data_train.txt', 'r', 'utf-8')
@@ -187,21 +214,21 @@ class PLSA:
 # file.close()
 
 
-# model = PLSA(K=3, maxIteration=50,threshold=5.0, topicWordsNum=3)
+# model = PLSA(K=3, maxIteration=70,threshold=5.0, topicWordsNum=4)
 
-# # m,n,x = model.preprocessing(dataset=train_data)
+# m,n,x = model.preprocessing(dataset=train_data)
 # p, Pz, lamda, theta, wordTop, id2w = model.train(dataset=train_data)
 
-# # # for i in range(0,len(wordTop)):
-# # #     wordTop[i] = 'Pz'+str(i) + wordTop[i]
-# file = codecs.open('data_test.txt', 'r', 'utf-8')
-# test_data = [document.strip() for document in file] 
-# file.close()
 
-# topic = model.test(test_data)
 
+# print("Pz \n")
 # print(Pz)
 # print(wordTop)
 
-# print(topic)
+# file = codecs.open('data_test.txt', 'r', 'utf-8')
+# test_data = [document.lower().strip() for document in file] 
+# file.close()
 
+# m= model.test(test_data)
+# # print(z)
+# print("Topic: ",m)
