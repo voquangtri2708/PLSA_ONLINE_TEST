@@ -17,15 +17,19 @@ def handle_message():
 
     global model
 
-
-    if model == None:
+    if model is None:
         return jsonify({'response': "Vui lòng train model hoặc up model PLSA!!!"})
+
+    # If user_message is a list, you might want to concatenate or process it differently
+    if isinstance(user_message, list):
+        # Process the list as needed
+        topics = model.test(user_message)  # Modify accordingly if your model can handle lists
+        return jsonify({'response': str(topics)})
     else:
-        topic = model.test(user_message)
-        # bot_response = summarize_text(user_message)
-        
-        # return jsonify({'response': bot_response})
-        return jsonify({'response': "Pz"+str(topic)})
+        # Handle the case where user_message is a single string
+        topic = model.test([user_message])  # Treat it as a single item list
+        return jsonify({'response': str(topic)})
+
 
 @app.route('/train_model', methods=["POST"])
 def train_model():
@@ -36,7 +40,7 @@ def train_model():
     num_topics = data.get('num_topics', 0)
 
     global model 
-    model = PLSA(K=num_topics, maxIteration=30,threshold=10.0, topicWordsNum=5)
+    model = PLSA(K=num_topics, maxIteration=30,threshold=10.0, topicWordsNum=10)
     p, Pz, lamda, theta, wordTop, id2w = model.train(dataset=train_data)
 
     for i in range(0,len(wordTop)):
@@ -45,36 +49,8 @@ def train_model():
     
 
     result = dict(zip(wordTop, Pz))
-    
-    # Xử lý huấn luyện mô hình pLSA với dữ liệu này (tạm thời trả về dữ liệu nhận được)
-    # result = {
-    #     'train_data_len': len(train_data),
-    #     'num_topics': 6,
-    #     'status': 'Training successful (mock)'
-    # }
-
-    # Pz = [0.2, 0.4, 0.4]
-    # result = {
-    #     'Pz'+str(i)+'hihihohohaha': value for i, value in enumerate(Pz)
-    # }
-
-    # Trả kết quả về client
     return jsonify(result)
 
-@app.route('/test_model', methods=['POST'])
-def test_model():
-    data = request.get_json()
-
-    test_data = data.get('test_data', [])
-
-
-    # test 
-    lamda_new = [0.3, 0.4, 0.3]
-
-    result = {'lamda'+str(i): value for i, value in enumerate(lamda_new)}
-
-    return jsonify(result)
-    # return lamda_new
 
 def summarize_text(text):
     return text

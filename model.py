@@ -6,6 +6,9 @@ from numpy import zeros, int8, log
 from pyvi import ViTokenizer
 from pylab import random
 
+
+
+
 class PLSA:
     def __init__(self, K, maxIteration=30, threshold=10.0, topicWordsNum=5):
         self.K = K  # Số chủ đề
@@ -170,19 +173,25 @@ class PLSA:
         z = []
         for k in range(self.K):
             p_new = 1
-            # print("Theta[",k,":]")
             for i in range(len(xtest)):
                 if xtest[i] != 0:
                     if self.theta[k,i] > 1e-6:
-                        # print(self.theta[k,i], " * ", xtest[i])
                         p_new *= self.theta[k,i] * xtest[i]
                         # print(p_new)
-            p_new *= self.Pz[k]
-            # print("Pzk|D", p_new)
-            z.append(p_new)
-        # print(z)        
-        main_topic = z.index(max(z))
-        return main_topic
+            if p_new == 1:
+                z.append(0)
+            else:
+                p_new *= self.Pz[k]
+                z.append(p_new)
+        # print(z)
+
+        if all(i == 0 for i in z):
+            return "Khong thuoc chu de nao trong cac chu de tren"  
+        else:
+            main_topic = z.index(min(z))
+            return 'Pz'+str(main_topic)
+
+
 
     def save_model(self, filename):
         with open(filename, 'wb') as f:
@@ -193,7 +202,6 @@ class PLSA:
                 'id2word': self.id2word,
                 'word2id': self.word2id,
             }, f)
-        # print(f'Model saved to {filename}')
 
     def load_model(self, filename):
         with open(filename, 'rb') as f:
@@ -203,10 +211,12 @@ class PLSA:
             self.lamda = params['lamda']
             self.id2word = params['id2word']
             self.word2id = params['word2id']
-        # print(f'Model loaded from {filename}')
         topic = self.get_top_words()
         self.K = len(self.Pz)
         return self.p, self.Pz, self.lamda, self.theta, topic, self.id2word
+
+
+
 
 
 # file = codecs.open('data_train.txt', 'r', 'utf-8')
@@ -216,7 +226,7 @@ class PLSA:
 
 # model = PLSA(K=3, maxIteration=70,threshold=5.0, topicWordsNum=4)
 
-# m,n,x = model.preprocessing(dataset=train_data)
+# # m,n,x = model.preprocessing(dataset=train_data)
 # p, Pz, lamda, theta, wordTop, id2w = model.train(dataset=train_data)
 
 
@@ -229,6 +239,6 @@ class PLSA:
 # test_data = [document.lower().strip() for document in file] 
 # file.close()
 
-# m= model.test(test_data)
-# # print(z)
+# m,z= model.test(test_data)
+# print(z)
 # print("Topic: ",m)

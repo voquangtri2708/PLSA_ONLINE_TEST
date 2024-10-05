@@ -126,7 +126,7 @@ function sendTestData() {
     if (chatFile) {
         readFileAsList(chatFile, function(fileData) {
             // Gửi dữ liệu test (file) lên server
-            fetch('/test_model', {
+            fetch('/send_message', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -148,33 +148,32 @@ function sendTestData() {
     } 
     // Nếu người dùng chỉ nhập văn bản
     else if (messageInput) {
-        const textData = messageInput.split(/\r?\n/).filter(line => line.trim() !== ''); // Tách nội dung text thành list
-
-        // Gửi dữ liệu test (text) lên server
-        fetch('/test_model', {
+        const textData = messageInput
+            .split('\n') // Tách theo dấu xuống dòng
+            .map(line => line.trim()) // Loại bỏ khoảng trắng ở đầu và cuối mỗi dòng
+            .filter(line => line.length > 0); // Loại bỏ các dòng trống
+    
+        // Gửi dữ liệu test (text) lên server dưới dạng mảng
+        fetch('/send_message', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ test_data: textData }),
+            body: JSON.stringify({ test_data: textData }), // Gửi dữ liệu dưới dạng mảng
         })
         .then(response => response.json())
         .then(data => {
-            addMessageToChat(data.message, 'user')
-
-            alert(data.message);
+            addMessageToChat(data.response, 'user');
+    
+            alert(data.response);
             console.log(data);  // Xem phản hồi từ server
-        })
-        .then(result =>{
-            // for(let key in result){
-            //     alert(result.key)
-            // }
-            alert(result.lamda0)
         })
         .catch(error => {
             console.error('Error:', error);
         });
-    } else {
+    }
+    
+     else {
         alert('Vui lòng chọn file hoặc nhập nội dung text.');
     }
 
