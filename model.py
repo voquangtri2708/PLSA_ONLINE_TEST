@@ -175,7 +175,7 @@ class PLSA:
             p_new = 1
             for i in range(len(xtest)):
                 if xtest[i] != 0:
-                    if self.theta[k,i] > 1e-6:
+                    # if self.theta[k,i] > 1e-6:
                         p_new *= self.theta[k,i] * xtest[i]
                         # print(p_new)
             if p_new == 1:
@@ -188,7 +188,7 @@ class PLSA:
         if all(i == 0 for i in z):
             return "Khong thuoc chu de nao trong cac chu de tren"  
         else:
-            main_topic = z.index(min(z))
+            main_topic = z.index(max(z))
             return 'Pz'+str(main_topic)
 
 
