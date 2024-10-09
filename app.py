@@ -40,7 +40,7 @@ def train_model():
     num_topics = data.get('num_topics', 0)
 
     global model 
-    model = PLSA(K=num_topics, maxIteration=30,threshold=10.0, topicWordsNum=10)
+    model = PLSA(K=num_topics, maxIteration=30,threshold=10.0, topicWordsNum=7)
     p, Pz, lamda, theta, wordTop, id2w = model.train(dataset=train_data)
 
     for i in range(0,len(wordTop)):
